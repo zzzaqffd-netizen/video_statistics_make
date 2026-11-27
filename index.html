@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Statistics — WebGL 3D Theme Cards</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="webgl-canvas"></canvas>
+
+  <header class="hud-top">
+    <div class="brand">
+      <span class="brand-dot" id="theme-dot"></span>
+      <h1>VIDEO STATISTICS <span class="badge">WebGL 3D</span></h1>
+    </div>
+    <div class="theme-pill" id="theme-pill">Theme 1 / 5 · Cyberpunk Neon</div>
+  </header>
+
+  <main class="hud-bottom">
+    <button class="nav-btn" id="prev-btn" aria-label="Previous theme card">←</button>
+    <div class="dots" id="nav-dots"></div>
+    <button class="nav-btn" id="next-btn" aria-label="Next theme card">→</button>
+  </main>
+
+  <aside class="hud-hint">
+    Drag, scroll, or use ← / → keys to shift themes from left to right
+  </aside>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
