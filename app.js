@@ -2,64 +2,69 @@ import * as THREE from 'three';
 
 const THEMES = [
   {
-    name: 'Cyberpunk Neon',
-    metricLabel: 'TOTAL VIEWS',
-    metricValue: '2.84M',
-    delta: '+34.2% vs last 28d',
-    subtitle: 'Watch Time: 142.6K hrs',
+    name: 'NVDA · Cyberpunk Neon',
+    metricLabel: 'NVIDIA MARKET CAP',
+    metricValue: '$3.42T',
+    delta: '+184.6% YTD · $139.40',
+    subtitle: 'AI Data Center Surge · +$2.21T',
     bg: 0x070614,
     accent: '#00f0ff',
     secondary: '#ff2a85',
-    bars: [42, 68, 55, 84, 76, 95, 88],
+    bars: [22, 35, 48, 64, 79, 91, 100],
     shape: 'torusKnot',
+    riseStyle: 'rocket',
   },
   {
-    name: 'Solaris Gold',
-    metricLabel: 'AVG RETENTION',
-    metricValue: '68.4%',
-    delta: '+9.1% hook rate',
-    subtitle: 'Peak: 02:14 · Intro 82%',
+    name: 'TSLA · Solaris Gold',
+    metricLabel: 'TESLA VALUATION',
+    metricValue: '$1.12T',
+    delta: '+72.4% Q4 · $348.90',
+    subtitle: 'FSD & Energy Rally · +$470B',
     bg: 0x120b05,
     accent: '#ffb703',
     secondary: '#fb8500',
-    bars: [82, 76, 71, 69, 66, 62, 58],
+    bars: [34, 41, 38, 56, 74, 88, 96],
     shape: 'icosahedron',
+    riseStyle: 'spring',
   },
   {
-    name: 'Abyssal Ocean',
-    metricLabel: 'CLICK-THROUGH',
-    metricValue: '11.7%',
-    delta: '+2.4% thumbnail A/B',
-    subtitle: 'Impressions: 24.3M',
+    name: 'MSFT · Abyssal Ocean',
+    metricLabel: 'MICROSOFT CAP',
+    metricValue: '$3.18T',
+    delta: '+28.9% YoY · $427.50',
+    subtitle: 'Azure Cloud & Copilot · +$712B',
     bg: 0x03101a,
     accent: '#38bdf8',
     secondary: '#2dd4bf',
-    bars: [38, 49, 63, 72, 68, 81, 90],
+    bars: [48, 54, 61, 68, 76, 84, 92],
     shape: 'octahedron',
+    riseStyle: 'smooth',
   },
   {
-    name: 'Emerald Matrix',
-    metricLabel: 'SUBSCRIBERS',
-    metricValue: '+94.2K',
-    delta: '1.8x viral velocity',
-    subtitle: 'Conversion: 3.3% / view',
+    name: 'AAPL · Emerald Matrix',
+    metricLabel: 'APPLE VALUATION',
+    metricValue: '$3.56T',
+    delta: '+31.2% YoY · $234.80',
+    subtitle: 'Services & Silicon · +$846B',
     bg: 0x04120a,
     accent: '#10b981',
     secondary: '#a3e635',
-    bars: [25, 34, 48, 52, 74, 89, 98],
+    bars: [52, 58, 63, 71, 79, 86, 95],
     shape: 'dodecahedron',
+    riseStyle: 'cascade',
   },
   {
-    name: 'Crimson Pulse',
-    metricLabel: 'EST. REVENUE',
-    metricValue: '$18,420',
-    delta: 'RPM $6.48 · +18.5%',
-    subtitle: 'Top Geo: US / UK / DE',
+    name: 'AMZN · Crimson Pulse',
+    metricLabel: 'AMAZON MARKET CAP',
+    metricValue: '$2.24T',
+    delta: '+49.8% YoY · $213.60',
+    subtitle: 'AWS & Margin Expansion · +$745B',
     bg: 0x14050a,
     accent: '#ff3366',
     secondary: '#c084fc',
-    bars: [54, 61, 58, 77, 83, 79, 94],
+    bars: [36, 45, 55, 66, 77, 85, 93],
     shape: 'torus',
+    riseStyle: 'flip',
   },
 ];
 
@@ -426,12 +431,33 @@ function animate() {
       card.frontTex.needsUpdate = true;
     }
 
-    const riseEase = 1 - Math.pow(1 - card.riseProgress, 3);
-    const riseOffsetY = (1 - riseEase) * -1.1;
+    let riseEase = 1 - Math.pow(1 - card.riseProgress, 3);
+    let riseOffsetY = (1 - riseEase) * -1.1;
+    let riseRotX = 0;
+
+    if (card.theme.riseStyle === 'rocket') {
+      riseEase = 1 - Math.pow(1 - card.riseProgress, 5);
+      riseOffsetY = (1 - riseEase) * -2.2;
+    } else if (card.theme.riseStyle === 'spring') {
+      const p = card.riseProgress;
+      const c4 = (2 * Math.PI) / 3;
+      riseEase = p === 0 ? 0 : p === 1 ? 1 : Math.pow(2, -8 * p) * Math.sin((p * 10 - 0.75) * c4) + 1;
+      riseOffsetY = (1 - riseEase) * -1.4;
+    } else if (card.theme.riseStyle === 'cascade') {
+      const steps = 6;
+      const stepped = Math.floor(card.riseProgress * steps) / steps;
+      riseEase = stepped + (card.riseProgress - stepped) * 0.6;
+      riseOffsetY = (1 - Math.min(1, riseEase)) * -1.2;
+    } else if (card.theme.riseStyle === 'flip') {
+      riseEase = 1 - Math.pow(1 - card.riseProgress, 3);
+      riseOffsetY = (1 - riseEase) * -1.3;
+      riseRotX = (1 - riseEase) * Math.PI * 0.45;
+    }
 
     // 3D depth, tilt, and scale
     card.group.position.z = -absDist * 1.15;
     card.group.rotation.y = -dist * 0.36;
+    card.group.rotation.x = riseRotX;
     const scale = Math.max(0.74, 1.06 - absDist * 0.16);
     card.group.scale.setScalar(scale);
 
