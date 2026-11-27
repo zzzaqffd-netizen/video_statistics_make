@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Valuation Race — Sub-Page</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      overflow-y: auto;
+      background: radial-gradient(circle at top, #0f172a 0%, #05050a 70%);
+    }
+    .subpage-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 96px 24px 64px;
+    }
+    .subpage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .subpage-header h2 {
+      font-size: 2rem;
+      letter-spacing: -0.02em;
+    }
+    .subpage-header p {
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 6px;
+    }
+    .back-link {
+      pointer-events: auto;
+      text-decoration: none;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.16);
+      transform: translateY(-1px);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 20px;
+    }
+    .panel {
+      background: rgba(12, 14, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 22px;
+      backdrop-filter: blur(12px);
+    }
+    .panel-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .panel-val {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .bar-row {
+      margin-bottom: 10px;
+    }
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      margin-bottom: 4px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .bar-track {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      width: 0%;
+      transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  </style>
+</head>
+<body>
+  <header class="hud-top">
+    <div class="brand">
+      <span class="brand-dot" style="background:#00f0ff;box-shadow:0 0 16px #00f0ff;"></span>
+      <h1>STOCK VALUATION <span class="badge">SUB-PAGE</span></h1>
+    </div>
+    <a href="/" class="back-link">← Back to 3D Stage</a>
+  </header>
+
+  <main class="subpage-wrap">
+    <div class="subpage-header">
+      <div>
+        <h2>Global Valuation &amp; Sector Breakdown</h2>
+        <p>All 5 WebGL themes side-by-side with live horizontal surge bars.</p>
+      </div>
+    </div>
+    <section class="grid" id="sector-grid"></section>
+  </main>
+
+  <script>
+    const SECTORS = [
+      {
+        title: 'NVDA · Cyberpunk Neon',
+        value: '$3.42T',
+        accent: '#00f0ff',
+        rows: [
+          { label: 'NVDA · NVIDIA', pct: 100, val: '$3.42T', color: '#76b900' },
+          { label: 'AAPL · Apple', pct: 98, val: '$3.35T', color: '#64748b' },
+          { label: 'MSFT · Microsoft', pct: 93, val: '$3.18T', color: '#0ea5e9' },
+          { label: 'AMZN · Amazon', pct: 65, val: '$2.24T', color: '#f59e0b' },
+        ],
+      },
+      {
+        title: 'TSLA · Solaris Gold',
+        value: '$1.12T',
+        accent: '#ffb703',
+        rows: [
+          { label: 'TSLA · Tesla', pct: 100, val: '$1,120B', color: '#e11d48' },
+          { label: 'TM · Toyota', pct: 22, val: '$245B', color: '#ea580c' },
+          { label: 'BYD · BYD Auto', pct: 11, val: '$118B', color: '#0284c7' },
+          { label: 'RACE · Ferrari', pct: 8, val: '$84B', color: '#dc2626' },
+        ],
+      },
+      {
+        title: 'WEALTH · Abyssal Ocean',
+        value: '$1,156B',
+        accent: '#38bdf8',
+        rows: [
+          { label: 'Elon Musk · TSLA', pct: 100, val: '$1,156B', color: '#dc2626' },
+          { label: 'Larry Page · GOOG', pct: 25, val: '$291B', color: '#2563eb' },
+          { label: 'Sergey Brin · GOOG', pct: 23, val: '$268B', color: '#1d4ed8' },
+          { label: 'Jeff Bezos · AMZN', pct: 22, val: '$249B', color: '#7c3aed' },
+        ],
+      },
+      {
+        title: 'CLOUD · Emerald Matrix',
+        value: '$3.18T',
+        accent: '#10b981',
+        rows: [
+          { label: 'AWS · Amazon', pct: 100, val: '$108B', color: '#f59e0b' },
+          { label: 'Azure · Microsoft', pct: 89, val: '$96B', color: '#0ea5e9' },
+          { label: 'GCP · Google', pct: 41, val: '$44B', color: '#10b981' },
+          { label: 'CRM · Salesforce', pct: 35, val: '$38B', color: '#06b6d4' },
+        ],
+      },
+      {
+        title: 'CHIPS · Crimson Pulse',
+        value: '$2.24T',
+        accent: '#ff3366',
+        rows: [
+          { label: 'NVDA · NVIDIA', pct: 100, val: '$3,420B', color: '#76b900' },
+          { label: 'TSM · TSMC', pct: 29, val: '$980B', color: '#e11d48' },
+          { label: 'AVGO · Broadcom', pct: 25, val: '$840B', color: '#dc2626' },
+          { label: 'ASML · ASML', pct: 9, val: '$310B', color: '#2563eb' },
+        ],
+      },
+    ];
+
+    const grid = document.getElementById('sector-grid');
+    SECTORS.forEach((s) => {
+      const card = document.createElement('article');
+      card.className = 'panel';
+      card.innerHTML = `
+        <div class="panel-title" style="color:${s.accent}">${s.title}</div>
+        <div class="panel-val">${s.value}</div>
+        ${s.rows
+          .map(
+            (r) => `
+          <div class="bar-row">
+            <div class="bar-meta"><span>${r.label}</span><span>${r.val}</span></div>
+            <div class="bar-track"><div class="bar-fill" data-pct="${r.pct}" style="background:${r.color}"></div></div>
+          </div>`
+          )
+          .join('')}
+      `;
+      grid.appendChild(card);
+    });
+
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.bar-fill').forEach((el) => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    });
+  </script>
+</body>
+</html>
