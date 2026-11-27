@@ -119,11 +119,26 @@ const particleMat = new THREE.PointsMaterial({
 const particles = new THREE.Points(particleGeo, particleMat);
 scene.add(particles);
 
-function createCardTexture(theme, index) {
-  const c = document.createElement('canvas');
-  c.width = 640;
-  c.height = 840;
+function formatCounter(targetStr, progress) {
+  const match = targetStr.match(/^([^0-9]*)([0-9.,]+)(.*)$/);
+  if (!match) return targetStr;
+  const [, prefix, numStr, suffix] = match;
+  const hasComma = numStr.includes(',');
+  const decimals = numStr.includes('.') ? numStr.split('.')[1].length : 0;
+  const targetNum = parseFloat(numStr.replace(/,/g, ''));
+  const current = targetNum * progress;
+  let formatted = current.toFixed(decimals);
+  if (hasComma) {
+    const parts = formatted.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    formatted = parts.join('.');
+  }
+  return `${prefix}${formatted}${suffix}`;
+}
+
+function drawCardTexture(c, theme, index, progress = 1) {
   const ctx = c.getContext('2d');
+  const eased = 1 - Math.pow(1 - progress, 3);
 
   // Card background gradient
   const grad = ctx.createLinearGradient(0, 0, 640, 840);
@@ -154,10 +169,10 @@ function createCardTexture(theme, index) {
   ctx.font = '600 22px Inter, sans-serif';
   ctx.fillText(theme.metricLabel, 52, 170);
 
-  // Metric Value
+  // Metric Value (rises once)
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 92px Inter, sans-serif';
-  ctx.fillText(theme.metricValue, 52, 268);
+  ctx.fillText(formatCounter(theme.metricValue, eased), 52, 268);
 
   // Delta pill
   ctx.fillStyle = `${theme.secondary}33`;
@@ -171,13 +186,15 @@ function createCardTexture(theme, index) {
   ctx.font = '500 24px Inter, sans-serif';
   ctx.fillText(theme.subtitle, 52, 405);
 
-  // Bar Chart
+  // Bar Chart (rises once like a valuation surge)
   const chartX = 52;
   const chartY = 710;
   const barW = 54;
   const gap = 22;
   theme.bars.forEach((val, i) => {
-    const h = (val / 100) * 220;
+    const barDelay = i * 0.06;
+    const barProg = Math.max(0, Math.min(1, (eased - barDelay) / (1 - barDelay)));
+    const h = (val / 100) * 220 * barProg;
     const x = chartX + i * (barW + gap);
     const barGrad = ctx.createLinearGradient(x, chartY - h, x, chartY);
     barGrad.addColorStop(0, theme.accent);
@@ -193,10 +210,16 @@ function createCardTexture(theme, index) {
   ctx.moveTo(52, chartY + 12);
   ctx.lineTo(588, chartY + 12);
   ctx.stroke();
+}
 
+function createCardTexture(theme, index) {
+  const c = document.createElement('canvas');
+  c.width = 640;
+  c.height = 840;
+  drawCardTexture(c, theme, index, 0);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
+  return { tex, canvas: c };
 }
 
 function createAccentMesh(theme) {
@@ -237,7 +260,7 @@ THEMES.forEach((theme, i) => {
   group.position.x = i * CARD_SPACING;
 
   const cardGeo = new THREE.BoxGeometry(2.6, 3.4, 0.12);
-  const frontTex = createCardTexture(theme, i);
+  const { tex: frontTex, canvas: cardCanvas } = createCardTexture(theme, i);
   const sideMat = new THREE.MeshStandardMaterial({
     color: 0x111626,
     metalness: 0.6,
@@ -258,7 +281,17 @@ THEMES.forEach((theme, i) => {
   group.add(accentMesh);
 
   cardGroup.add(group);
-  cards.push({ group, mesh, accentMesh, theme });
+  cards.push({
+    group,
+    mesh,
+    accentMesh,
+    theme,
+    index: i,
+    cardCanvas,
+    frontTex,
+    riseProgress: 0,
+    hasStartedRise: i === 0,
+  });
 
   // Nav dot
   const dot = document.createElement('button');
@@ -383,14 +416,27 @@ function animate() {
     const dist = i - currentPos;
     const absDist = Math.abs(dist);
 
+    if (absDist < 0.85) {
+      card.hasStartedRise = true;
+    }
+
+    if (card.hasStartedRise && card.riseProgress < 1) {
+      card.riseProgress = Math.min(1, card.riseProgress + 0.016);
+      drawCardTexture(card.cardCanvas, card.theme, card.index, card.riseProgress);
+      card.frontTex.needsUpdate = true;
+    }
+
+    const riseEase = 1 - Math.pow(1 - card.riseProgress, 3);
+    const riseOffsetY = (1 - riseEase) * -1.1;
+
     // 3D depth, tilt, and scale
     card.group.position.z = -absDist * 1.15;
     card.group.rotation.y = -dist * 0.36;
     const scale = Math.max(0.74, 1.06 - absDist * 0.16);
     card.group.scale.setScalar(scale);
 
-    // Subtle floating motion
-    card.group.position.y = Math.sin(t * 1.4 + i) * 0.08;
+    // Rise once + subtle floating motion
+    card.group.position.y = riseOffsetY + Math.sin(t * 1.4 + i) * 0.08;
 
     // Spin 3D theme accent geometry
     card.accentMesh.rotation.x = t * 0.6 + i;
