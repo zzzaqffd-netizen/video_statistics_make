@@ -428,10 +428,12 @@ const tempBg = new THREE.Color();
 const tempAccent = new THREE.Color();
 const tempSecondary = new THREE.Color();
 const clock = new THREE.Clock();
+const RISE_DURATION_SECONDS = 180; // 3 minutes
 
 function animate() {
   requestAnimationFrame(animate);
-  const t = clock.getElapsedTime();
+  const dt = Math.min(clock.getDelta(), 0.1);
+  const t = clock.elapsedTime;
 
   if (!isDragging) {
     currentPos += (targetIndex - currentPos) * 0.08;
@@ -468,7 +470,7 @@ function animate() {
     }
 
     if (card.hasStartedRise && card.riseProgress < 1) {
-      card.riseProgress = Math.min(1, card.riseProgress + 0.016);
+      card.riseProgress = Math.min(1, card.riseProgress + dt / RISE_DURATION_SECONDS);
       drawCardTexture(card.cardCanvas, card.theme, card.index, card.riseProgress);
       card.frontTex.needsUpdate = true;
     }
