@@ -3,68 +3,98 @@ import * as THREE from 'three';
 const THEMES = [
   {
     name: 'NVDA · Cyberpunk Neon',
-    metricLabel: 'NVIDIA MARKET CAP',
+    metricLabel: 'TECH MARKET CAP RACE',
     metricValue: '$3.42T',
-    delta: '+184.6% YTD · $139.40',
-    subtitle: 'AI Data Center Surge · +$2.21T',
+    delta: '+184.6% YTD · #1',
     bg: 0x070614,
     accent: '#00f0ff',
     secondary: '#ff2a85',
-    bars: [22, 35, 48, 64, 79, 91, 100],
     shape: 'torusKnot',
     riseStyle: 'rocket',
+    rows: [
+      { label: 'NVDA · NVIDIA', value: 3.42, unit: 'T', color: '#76b900' },
+      { label: 'AAPL · Apple', value: 3.35, unit: 'T', color: '#64748b' },
+      { label: 'MSFT · Microsoft', value: 3.18, unit: 'T', color: '#0ea5e9' },
+      { label: 'AMZN · Amazon', value: 2.24, unit: 'T', color: '#f59e0b' },
+      { label: 'GOOGL · Alphabet', value: 2.12, unit: 'T', color: '#ef4444' },
+      { label: 'META · Meta', value: 1.48, unit: 'T', color: '#3b82f6' },
+    ],
   },
   {
     name: 'TSLA · Solaris Gold',
-    metricLabel: 'TESLA VALUATION',
+    metricLabel: 'EV & MOBILITY SURGE',
     metricValue: '$1.12T',
-    delta: '+72.4% Q4 · $348.90',
-    subtitle: 'FSD & Energy Rally · +$470B',
+    delta: '+72.4% Q4 · #1',
     bg: 0x120b05,
     accent: '#ffb703',
     secondary: '#fb8500',
-    bars: [34, 41, 38, 56, 74, 88, 96],
     shape: 'icosahedron',
     riseStyle: 'spring',
+    rows: [
+      { label: 'TSLA · Tesla', value: 1120, unit: 'B', color: '#e11d48' },
+      { label: 'TM · Toyota', value: 245, unit: 'B', color: '#ea580c' },
+      { label: 'BYD · BYD Auto', value: 118, unit: 'B', color: '#0284c7' },
+      { label: 'RACE · Ferrari', value: 84, unit: 'B', color: '#dc2626' },
+      { label: 'P911 · Porsche', value: 62, unit: 'B', color: '#ca8a04' },
+      { label: 'RIVN · Rivian', value: 14, unit: 'B', color: '#16a34a' },
+    ],
   },
   {
-    name: 'MSFT · Abyssal Ocean',
-    metricLabel: 'MICROSOFT CAP',
-    metricValue: '$3.18T',
-    delta: '+28.9% YoY · $427.50',
-    subtitle: 'Azure Cloud & Copilot · +$712B',
+    name: 'WEALTH · Abyssal Ocean',
+    metricLabel: 'BILLIONAIRE RACE',
+    metricValue: '$1,156B',
+    delta: 'ROAD TO $1 TRILLION',
     bg: 0x03101a,
     accent: '#38bdf8',
     secondary: '#2dd4bf',
-    bars: [48, 54, 61, 68, 76, 84, 92],
     shape: 'octahedron',
     riseStyle: 'smooth',
+    rows: [
+      { label: 'Elon Musk · TSLA', value: 1156, unit: 'B', color: '#dc2626' },
+      { label: 'Larry Page · GOOG', value: 291, unit: 'B', color: '#2563eb' },
+      { label: 'Sergey Brin · GOOG', value: 268, unit: 'B', color: '#1d4ed8' },
+      { label: 'Jeff Bezos · AMZN', value: 249, unit: 'B', color: '#7c3aed' },
+      { label: 'Larry Ellison · ORCL', value: 229, unit: 'B', color: '#ea580c' },
+      { label: 'Jensen Huang · NVDA', value: 175, unit: 'B', color: '#16a34a' },
+    ],
   },
   {
-    name: 'AAPL · Emerald Matrix',
-    metricLabel: 'APPLE VALUATION',
-    metricValue: '$3.56T',
-    delta: '+31.2% YoY · $234.80',
-    subtitle: 'Services & Silicon · +$846B',
+    name: 'CLOUD · Emerald Matrix',
+    metricLabel: 'CLOUD & AI REVENUE',
+    metricValue: '$3.18T',
+    delta: '+31.2% YoY · AZURE',
     bg: 0x04120a,
     accent: '#10b981',
     secondary: '#a3e635',
-    bars: [52, 58, 63, 71, 79, 86, 95],
     shape: 'dodecahedron',
     riseStyle: 'cascade',
+    rows: [
+      { label: 'AWS · Amazon', value: 108, unit: 'B', color: '#f59e0b' },
+      { label: 'Azure · Microsoft', value: 96, unit: 'B', color: '#0ea5e9' },
+      { label: 'GCP · Google', value: 44, unit: 'B', color: '#10b981' },
+      { label: 'OCI · Oracle', value: 24, unit: 'B', color: '#ef4444' },
+      { label: 'CRM · Salesforce', value: 38, unit: 'B', color: '#06b6d4' },
+      { label: 'NOW · ServiceNow', value: 11, unit: 'B', color: '#84cc16' },
+    ],
   },
   {
-    name: 'AMZN · Crimson Pulse',
-    metricLabel: 'AMAZON MARKET CAP',
+    name: 'CHIPS · Crimson Pulse',
+    metricLabel: 'SILICON & COMPUTE',
     metricValue: '$2.24T',
-    delta: '+49.8% YoY · $213.60',
-    subtitle: 'AWS & Margin Expansion · +$745B',
+    delta: '+49.8% YoY · #1',
     bg: 0x14050a,
     accent: '#ff3366',
     secondary: '#c084fc',
-    bars: [36, 45, 55, 66, 77, 85, 93],
     shape: 'torus',
     riseStyle: 'flip',
+    rows: [
+      { label: 'NVDA · NVIDIA', value: 3420, unit: 'B', color: '#76b900' },
+      { label: 'TSM · TSMC', value: 980, unit: 'B', color: '#e11d48' },
+      { label: 'AVGO · Broadcom', value: 840, unit: 'B', color: '#dc2626' },
+      { label: 'ASML · ASML', value: 310, unit: 'B', color: '#2563eb' },
+      { label: 'AMD · AMD', value: 245, unit: 'B', color: '#0d9488' },
+      { label: 'INTC · Intel', value: 98, unit: 'B', color: '#0284c7' },
+    ],
   },
 ];
 
@@ -186,35 +216,47 @@ function drawCardTexture(c, theme, index, progress = 1) {
   ctx.font = 'bold 21px Inter, sans-serif';
   ctx.fillText(theme.delta, 68, 326);
 
-  // Subtitle
-  ctx.fillStyle = 'rgba(255,255,255,0.72)';
-  ctx.font = '500 24px Inter, sans-serif';
-  ctx.fillText(theme.subtitle, 52, 405);
+  // Subtitle / Rank Header
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.font = '600 18px Inter, sans-serif';
+  ctx.fillText('LIVE RANKING · HORIZONTAL SURGE', 52, 386);
 
-  // Bar Chart (rises once like a valuation surge)
-  const chartX = 52;
-  const chartY = 710;
-  const barW = 54;
-  const gap = 22;
-  theme.bars.forEach((val, i) => {
-    const barDelay = i * 0.06;
-    const barProg = Math.max(0, Math.min(1, (eased - barDelay) / (1 - barDelay)));
-    const h = (val / 100) * 220 * barProg;
-    const x = chartX + i * (barW + gap);
-    const barGrad = ctx.createLinearGradient(x, chartY - h, x, chartY);
-    barGrad.addColorStop(0, theme.accent);
-    barGrad.addColorStop(1, `${theme.secondary}66`);
+  // Horizontal Bar Chart Race (Global Stats style)
+  const startY = 412;
+  const rowH = 52;
+  const rowGap = 14;
+  const maxBarW = 395;
+  const maxVal = theme.rows[0].value;
+
+  theme.rows.forEach((row, i) => {
+    const rowDelay = i * 0.07;
+    const rowProg = Math.max(0, Math.min(1, (eased - rowDelay) / (1 - rowDelay)));
+    const y = startY + i * (rowH + rowGap);
+    const barW = Math.max(24, (row.value / maxVal) * maxBarW * rowProg);
+
+    // Bar background track
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    ctx.fillRect(52, y, maxBarW, rowH);
+
+    // Colored horizontal bar
+    const barGrad = ctx.createLinearGradient(52, y, 52 + barW, y);
+    barGrad.addColorStop(0, row.color);
+    barGrad.addColorStop(1, `${row.color}cc`);
     ctx.fillStyle = barGrad;
-    ctx.fillRect(x, chartY - h, barW, h);
-  });
+    ctx.fillRect(52, y, barW, rowH);
 
-  // Baseline
-  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(52, chartY + 12);
-  ctx.lineTo(588, chartY + 12);
-  ctx.stroke();
+    // Rank & Company Label
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 20px Inter, sans-serif';
+    ctx.fillText(`#${i + 1}  ${row.label}`, 64, y + 33);
+
+    // Animated Value on the right
+    const curVal = row.value * rowProg;
+    const valStr = row.value >= 100 ? `$${Math.round(curVal)}${row.unit}` : `$${curVal.toFixed(2)}${row.unit}`;
+    ctx.fillStyle = i === 0 ? theme.accent : 'rgba(255,255,255,0.88)';
+    ctx.font = 'bold 22px Inter, sans-serif';
+    ctx.fillText(valStr, 52 + maxBarW + 16, y + 34);
+  });
 }
 
 function createCardTexture(theme, index) {
