@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     body { overflow-y: auto; background: radial-gradient(circle at top, #ff336622 0%, #05050a 70%); }
-    .wrap { max-width: 960px; margin: 0 auto; padding: 100px 24px 64px; }
+    .wrap { width: 100%; min-height: 100vh; padding: 88px 28px 36px; display: flex; flex-direction: column; }
     .pill-link { text-decoration: none; color: #fff; padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); font-size: 0.8rem; font-weight: 600; }
     .pill-link:hover { background: rgba(255,255,255,0.18); }
-    .hero { background: linear-gradient(135deg, #ff336618 0%, rgba(12,14,24,0.88) 70%); border: 1px solid #ff336655; border-radius: 22px; padding: 36px; box-shadow: 0 20px 60px #ff33661a; }
+    .hero { background: linear-gradient(135deg, #ff336618 0%, rgba(12,14,24,0.88) 70%); border: 1px solid #ff336655; border-radius: 22px; padding: 36px; flex: 1; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 20px 60px #ff33661a; }
     .hero-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
     .hero h2 { font-size: 2.2rem; margin: 12px 0 4px; }
     .big-val { font-size: 3.4rem; font-weight: 800; color: #ff3366; margin: 8px 0 24px; }
